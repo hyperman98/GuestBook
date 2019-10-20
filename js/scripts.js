@@ -10,5 +10,3 @@ function show_form(){
         $('.add_com_but').show();               
     }   
 }
-
-
