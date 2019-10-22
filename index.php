@@ -15,7 +15,7 @@ require "helper.php"; //Подключаем вспомогательные фу
 // Соединение с базой данных
 DB::init($dbOptions);
 
-$per_page = 1; //Максимальное число сообщений на одной странице
+$per_page = 25; //Максимальное число сообщений на одной странице
 $num_page = 2;
 
 
@@ -103,6 +103,8 @@ if(!empty($_POST['submit'])){
                 <input class="text" name="name" value="<?=set_value('name');?>" type="text"><br>
 		    <label>E-mail:</label>
                     <input class="text" name="user_email" value="<?=set_value('user_email');?>" type="text"><br>
+                    <label>Homepage</label>
+                    <input class="text" type="text"><br>
 		    <label>Message:</label>
                     <textarea cols="15" rows="5" name="text" id="com_text"><?=set_value('text');?></textarea><br>
 		    
@@ -119,32 +121,26 @@ if(!empty($_POST['submit'])){
             </form>
 
         </div>
-        <div class="comments-block">
-            <?php if(!empty($items)):
-                foreach($items as $item):?>    
-                <a name="comments-<?=$item['id']?>"></a>
-                <div class="com-item-pad" id="com_<?=$item['id']?>">
-                <div class="com-item">              	 		
-    	            <div class="user_info">
-    		            <div class="info_panel">
-    			            <div class="fl-left">
-                                <strong><?=$item['name']?></strong>                   
-    	        	            <span class="date"><?=$item['date']?></span>
-    	                    </div>
-    		            </div>
-    		            <div class="com_body"><?=$item['text']?></div>
-    	            </div>								
-                </div>																					
-            </div>
-            <div id="com-form-wrap"></div>
-			<?php endforeach; 
-                        else:?>
-			<div class="com-item"><h2>No active reviews</h2></div>
-			<?php endif;?>           												
-	</div>
-		
-		<?=pagination($total,$per_page,$num_page,$start_row,'/')?>
-		
+<table class="comments-block">
+    <tr>
+        <th>Name</th>
+        <th>Date</th>
+        <th>E-mail</th>
+    </tr>
+    <?if(!empty($items)):
+    foreach ($items as $item):?>
+    <tr>
+        <td><?=$item['name'];?></td>
+        <td class="date"><?=$item['date'];?></td>
+        <td class="com_body"><?=$item['email'];?></td>
+    </tr>
+    <div id="com-form-wrap"></div>
+    <? endforeach;
+    else:?>
+    <div class="com-item"><h2>No active reviews</h2></div>
+    <? endif;?>
+</table>
+<?=pagination($total,$per_page,$num_page,$start_row,'/')?>		
 </div>
 </body>
 </html>
