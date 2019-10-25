@@ -4,59 +4,59 @@ function set_value($name,$default = ''){
 }
 
 function pagination($total,$per_page,$num_links,$start_row,$url=''){
-	//РџРѕР»СѓС‡Р°РµРј РѕР±С‰РµРµ С‡РёСЃР»Рѕ СЃС‚СЂР°РЅРёС†
+	//Получаем общее число страниц
 	$num_pages = ceil($total/$per_page); 
 	
 	if ($num_pages <= 1) return '';
 	
-	//РџРѕР»СѓС‡Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РЅР° СЃС‚СЂР°РЅРёС†С‹
+	//Получаем количество элементов на страницы
 	$cur_page = $start_row; 
 	
-	//Р•СЃР»Рё РєРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РЅР° СЃС‚СЂР°РЅРёС†С‹ Р±РѕР»СЊС€Рµ С‡РµРј РѕР±С‰РµРµ С‡РёСЃР»Рѕ СЌР»РµРјРµРЅС‚РѕРІ
-	// С‚Рѕ С‚РµРєСѓС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р° Р±СѓРґРµС‚ СЂР°РІРЅР° РїРѕСЃР»РµРґРЅРµР№
+	//Если количество элементов на страницы больше чем общее число элементов
+	// то текущая страница будет равна последней
 	if ($cur_page > $total){
 		$cur_page = ($num_pages - 1) * $per_page;
 	}
 	
-	//РџРѕР»СѓС‡Р°РµРј РЅРѕРјРµСЂ С‚РµРєСѓС‰РµР№ СЃС‚СЂР°РЅРёС†С‹
+	//Получаем номер текущей страницы
 	$cur_page = floor(($cur_page/$per_page) + 1);
 	
-	//РџРѕР»СѓС‡Р°РµРј РЅРѕРјРµСЂ СЃС‚Р°СЂС‚РѕРІРѕР№ СЃС‚СЂР°РЅРёС†С‹ РІС‹РІРѕРґРёРјРѕР№ РІ РїРµР№РґР¶РёРЅРіРµ
+	//Получаем номер стартовой страницы выводимой в пейджинге
 	$start = (($cur_page - $num_links) > 0) ? $cur_page - $num_links : 0;
-	//РџРѕР»СѓС‡Р°РµРј РЅРѕРјРµСЂ РїРѕСЃР»РµРґРЅРµР№ СЃС‚СЂР°РЅРёС†С‹ РІС‹РІРѕРґРёРјРѕР№ РІ РїРµР№РґР¶РёРЅРіРµ
+	//Получаем номер последней страницы выводимой в пейджинге
 	$end   = (($cur_page + $num_links) < $num_pages) ? $cur_page + $num_links : $num_pages;
 	
 	$output = '<span class="ways">';
 	
-	//Р¤РѕСЂРјРёСЂСѓРµРј СЃСЃС‹Р»РєСѓ РЅР° РїСЂРµРґС‹РґСѓС‰СѓСЋ СЃС‚СЂР°РЅРёС†Сѓ
+	//Формируем ссылку на предыдущую страницу
 	if  ($cur_page != 1){
 			$i = $start_row - $per_page;
 			if ($i <= 0) $i = 0;
-			$output .= '<i>в†ђ</i><a href="'.$url.'?p='.$i.'">РџСЂРµРґС‹РґСѓС‰Р°СЏ</a>';
+			$output .= '<i>?</i><a href="'.$url.'?p='.$i.'">Предыдущая</a>';
 	}
 	else{
-		$output .= '<span><i>в†ђ</i>РџСЂРµРґС‹РґСѓС‰Р°СЏ</span>';
+		$output .= '<span><i>?</i>Предыдущая</span>';
 	}
 	
 	$output .= '<span class="divider">|</span>';
 	
-	//Р¤РѕСЂРјРёСЂСѓРµРј СЃСЃС‹Р»РєСѓ РЅР° СЃР»РµРґСѓСЋС‰СѓСЋ СЃС‚СЂР°РЅРёС†Сѓ
+	//Формируем ссылку на следующую страницу
 	if ($cur_page < $num_pages){
-		$output .= '<a href="'.$url.'?p='.($cur_page * $per_page).'">РЎР»РµРґСѓСЋС‰Р°СЏ</a><i>в†’</i>';
+		$output .= '<a href="'.$url.'?p='.($cur_page * $per_page).'">Следующая</a><i>?</i>';
 	}
 	else{
-		$output .= '<span>РЎР»РµРґСѓСЋС‰Р°СЏ<i>в†’</i></span>';
+		$output .= '<span>Следующая<i>?</i></span>';
 	}
 	
 	$output .= '</span><br/>';
 	
 	
-	//Р¤РѕСЂРјРёСЂСѓРµРј СЃСЃС‹Р»РєСѓ РЅР° РїРµСЂРІСѓСЋ СЃС‚СЂР°РЅРёС†Сѓ
+	//Формируем ссылку на первую страницу
 	if  ($cur_page > ($num_links + 1)){
 		$output .= '<a href="'.$url.'" title="First"><img src="images/left_active.png"></a>';
 	}
 	
-	// Р¤РѕСЂРјРёСЂСѓРµРј СЃРїРёСЃРѕРє СЃС‚СЂР°РЅРёС† СЃ СѓС‡РµС‚РѕРј СЃС‚Р°СЂС‚РѕРІРѕР№ Рё РїРѕСЃР»РµРґРЅРµР№ СЃС‚СЂР°РЅРёС†С‹	
+	// Формируем список страниц с учетом стартовой и последней страницы	
     for ($loop = $start; $loop <= $end; $loop++){
 		$i = ($loop * $per_page) - $per_page;
 
@@ -64,7 +64,7 @@ function pagination($total,$per_page,$num_links,$start_row,$url=''){
 		{
 			if ($cur_page == $loop)
 			{
-				$output .= '<span>'.$loop.'</span>'; // РўРµРєСѓС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р°
+				$output .= '<span>'.$loop.'</span>'; // Текущая страница
 			}
 			else
 			{
@@ -74,7 +74,7 @@ function pagination($total,$per_page,$num_links,$start_row,$url=''){
 		}
 	}
 
-	//Р¤РѕСЂРјРёСЂСѓРµРј СЃСЃС‹Р»РєСѓ РЅР° РїРѕСЃР»РµРґРЅСЋСЋ СЃС‚СЂР°РЅРёС†Сѓ
+	//Формируем ссылку на последнюю страницу
 	if (($cur_page + $num_links) < $num_pages){
 		$i = (($num_pages * $per_page) - $per_page);
 		$output .= '<a href="'.$url.'?p='.$i.'" title="Last"><img src="images/right_active.png"></a>';
@@ -83,5 +83,42 @@ function pagination($total,$per_page,$num_links,$start_row,$url=''){
 	
 	
 	return '<div class="wrapPaging"><strong>Pages:</strong>'.$output.'</div>';
+}
+
+function format_date($date,$format = 'date'){
+    if(empty($date)) return '';
+
+    $months = array(
+        '1' => 'January',
+        '2' => 'February',
+        '3' => 'March',
+        '4' => 'April',
+        '5' => 'May',
+        '6' => 'June',
+        '7' => 'July',
+        '8' => 'August',
+        '9' => 'September',
+        '10' => 'October',
+        '11' => 'November',
+        '12' => 'December'
+    );
+
+    if($format == 'time'){
+        return date('H:i',$date);
+    }
+    elseif($format == 'date'){
+
+        $m = date('n', $date); $m = $months[$m];
+
+        $d = date('j',$date);
+
+        $y = date('Y',$date);
+
+        return  $d.' '.$m.' '.$y;
+
+    }
+    else{
+        return date('d.M.Y H:i',$date);
+    }
 }
 ?>
