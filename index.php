@@ -1,7 +1,7 @@
 <?php 
 session_start();
 
-/* РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ Р±Р°Р·С‹ РґР°РЅРЅС‹С…. Р”РѕР±Р°РІСЊС‚Рµ СЃРІРѕРё РґР°РЅРЅС‹Рµ */
+/* Конфигурация базы данных. Добавьте свои данные */
 $dbOptions = array(
 	'db_host' => 'localhost',
 	'db_user' => 'root',
@@ -9,17 +9,17 @@ $dbOptions = array(
 	'db_name' => 'guests'
 );
 
-require "DB.class.php"; //РџРѕРґРєР»СЋС‡Р°РµРј РєР»Р°СЃСЃ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р±Р°Р·РѕР№ РґР°РЅРЅС‹С…
-require "helper.php"; //РџРѕРґРєР»СЋС‡Р°РµРј РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё
+require "DB.class.php"; //Подключаем класс для работы с базой данных
+require "helper.php"; //Подключаем вспомогательные функции
 
-// РЎРѕРµРґРёРЅРµРЅРёРµ СЃ Р±Р°Р·РѕР№ РґР°РЅРЅС‹С…
+// Соединение с базой данных
 DB::init($dbOptions);
 
-$per_page = 25; //РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ С‡РёСЃР»Рѕ СЃРѕРѕР±С‰РµРЅРёР№ РЅР° РѕРґРЅРѕР№ СЃС‚СЂР°РЅРёС†Рµ
+$per_page = 25; //Максимальное число сообщений на одной странице
 $num_page = 2;
 
 
-//РџРѕР»СѓС‡Р°РµРј РѕР±С‰РµРµ С‡РёСЃР»Рѕ СЃРѕРѕР±С‰РµРЅРёР№
+//Получаем общее число сообщений
 $result = DB::query('SELECT COUNT(*) AS numrows FROM users');
 $total = $result->fetch_object()->numrows;
 
@@ -28,7 +28,7 @@ if($start_row < 0) $start_row = 0;
 if($start_row > $total) $start_row = $total;
 
 
-//РџРѕР»СѓС‡Р°РµРј СЃРїРёСЃРѕРє Р°РєС‚РёРІРЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№
+//Получаем список активных сообщений
 $result = DB::query('SELECT * FROM users ORDER BY date DESC LIMIT '.$start_row.','.$per_page);
 
 if (isset($_POST['name_sorting'])) {
@@ -57,7 +57,7 @@ while($row = $result->fetch_assoc()){
 
 
 
-//Р•СЃР»Рё РЅР°Р¶Р°С‚Р° РєРЅРѕРїРєР° "Р”РѕР±Р°РІРёС‚СЊ РѕС‚Р·С‹РІ"
+//Если нажата кнопка "Добавить отзыв"
 if(!empty($_POST['submit'])){
 	
 	$now = time();
@@ -68,23 +68,24 @@ if(!empty($_POST['submit'])){
     $user_email = (!empty($_POST['user_email']) && filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL)) ? $_POST['user_email'] : false;        
     $text = (!empty($_POST['text'])) ? trim(strip_tags($_POST['text'])) : false;
     $keystring = (!empty($_POST['keystring'])) ? $_POST['keystring'] : false;
+    $url = (!empty($_POST['url'])) ? trim(strip_tags($_POST['url'])) : false;
     
     if (empty($name)) $errors[] = '<div class="error">Empty field "Name"</div>'; 
     if (empty($user_email)) $errors[] = '<div class="error">Incorrect field "E-mail"</div>';
     if (empty($text)) $errors[] = '<div class="error">Empty field "Message"</div>'; 
     if (!$keystring || $keystring != $_SESSION['keystring']) $errors[] = '<div class="error">Incorrect Captcha</div>'; 
         
-        //Р•СЃР»Рё РѕС€РёР±РѕРє РЅРµС‚ РїРёС€РµРј РѕС‚Р·С‹РІ РІ Р±Р°Р·Сѓ
+        //Если ошибок нет пишем отзыв в базу
         if(!$errors){
         	
-        	//РџРµСЂРµРІРѕРґРёРј IP Р°РґСЂРµСЃ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ Р±РµР·РЅР°РєРѕРІРѕРµ С†РµР»РѕРµ С‡РёСЃР»Рѕ
+        	//Переводим IP адрес пользователя в безнаковое целое число
         	$user_ip = $_SERVER['REMOTE_ADDR'];
                 $browser = $_SERVER['HTTP_USER_AGENT'];
         	
-        	DB::query("INSERT INTO users (name,email,message,date,ip, browser) VALUES ('".DB::esc($name)."','".DB::esc($user_email)."','".DB::esc($text)."','".$now."','".$user_ip."','".$browser."')");
+        	DB::query("INSERT INTO users (name,email,message,date,ip, browser, url) VALUES ('".DB::esc($name)."','".DB::esc($user_email)."','".DB::esc($text)."','".$now."','".$user_ip."','".$browser."','".DB::esc($url)."')");
         	
         	$_SESSION['time'] = $now;
-        	unset($_SESSION['keystring']);//РЈРґР°Р»СЏРµРј РєР°РїС‡Сѓ РёР· СЃРµСЃСЃРёРё  
+        	unset($_SESSION['keystring']);//Удаляем капчу из сессии  
 			
         	if(DB::getMySQLiObject()->affected_rows == 1){
         		$errors[] = '<div class="error">Success!</div>';
@@ -123,7 +124,7 @@ if(!empty($_POST['submit'])){
 		    <label>E-mail:</label>
                     <input class="text" name="user_email" value="<?=set_value('user_email');?>" type="text"><br>
                     <label>Homepage</label>
-                    <input class="text" type="text"><br>
+                    <input class="text" name="url" value="<?= set_value('url')?>" type="text"><br>
 		    <label>Message:</label>
                     <textarea cols="15" rows="5" name="text" id="com_text"><?=set_value('text');?></textarea><br>
 		    
