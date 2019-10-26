@@ -1,10 +1,8 @@
 <?php 
 
-session_start();
-
 require "captcha.class.php"; //Подключаем класс капчи
 
-//Инициализируем капчу
+//�?нициализируем капчу
 $captcha = new Captcha();
 
 $_SESSION['keystring'] = $captcha->getKeyString();

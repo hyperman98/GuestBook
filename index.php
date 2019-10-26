@@ -1,6 +1,5 @@
 <?php 
 session_start();
-
 /* Конфигурация базы данных. Добавьте свои данные */
 $dbOptions = array(
 	'db_host' => 'localhost',
@@ -51,7 +50,7 @@ else if (isset($_POST['mail_sorting_desc'])) {
 }                    
 $items = array();
 while($row = $result->fetch_assoc()){
-        $row['date'] = format_date($row['date'],'date').'|'.format_date($row['date'],'time');
+        $row['date'] = format_date($row['date'],'date').' '.format_date($row['date'],'time');
 	$items[] = $row;
 }
 
@@ -95,21 +94,23 @@ if(!empty($_POST['submit'])){
         	}				
 	}
 }
-
+if (isset($_POST['logout'])) {
+    unset($_SESSION['user']);
+}
 ?>
 <!DOCTYPE html>
 <html>
     <head>
 	<title>Guest book</title>
 	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script> 
-	<script type="text/javascript" src="js/scripts.js"></script> 
+	<script type="text/javascript" src="js/scripts.js"></script>
+        <link href="styles/style.css" rel="stylesheet">
     </head>
     <body>
-    
 	<div class="contentToChange">
 	<h1>Reviews</h1>
-
-        <a name="top"></a>
+        <?if (!empty($_SESSION['user'])) { echo '<p>Здравствуйте, администратор</p><form method="post"><input type="submit" name="logout" value="Выйти"></form>';}?>
+        <br><a name="top"></a>
         <div class="noFloat">
     	    <div class="titleText" onclick="show_form()">Make Review
                 <a class="add_com_but"><img src="images/show_com.png" alt=""></a>
@@ -143,16 +144,23 @@ if(!empty($_POST['submit'])){
         </div>
 <table class="comments-block">
     <tr>
+        <th>ID</th>
         <th>Name</th>
         <th>Date</th>
         <th>Email<th>
     </tr>
     <?if(!empty($items)):
-    foreach ($items as $item):?>
-    <tr>
+        foreach ($items as $item):
+            if (isset($_POST[$item['id']])) {
+                DB::query("UPDATE users SET is_block = 1 WHERE id = ".$item['id']);
+            }
+    ?>
+    <tr <?=$item['is_block'] == 1 ? "hidden" : ""?>>
+        <td><?=$item['id']?></td>
         <td><?=$item['name'];?></td>
         <td class="date"><?=$item['date'];?></td>
-        <td class="com_body"><?=$item['email'];?></td>
+        <td class="com_body"><?=$item['email'];?></td>   
+        <td><?if (!empty($_SESSION['user'])) {?><form method="post"><input type="submit" name="<?=$item['id']?>" value="Заблокировать"/></form><?}?></td>
     </tr>
     <div id="com-form-wrap"></div>
     <? endforeach;?>
@@ -160,6 +168,7 @@ if(!empty($_POST['submit'])){
     <?else:?>
     <div class="com-item"><h2>No active reviews</h2></div>
     <? endif;?>
+    <br>
     <form method="post">
     <input type="submit" name="name_sorting" value="Sorting by name">
     <input type="submit" name="name_sorting_desc" value="Sorting by name DESC">
