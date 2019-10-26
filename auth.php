@@ -19,9 +19,8 @@ if (isset($_POST['submit'])) {
     while ($row = $query->fetch_assoc()) {
         $dblogin = $row['email'];
         $dbpassword = $row['password'];
-        $is_admin = $row['is_admin'];
     }          
-    if (($login == $dblogin) && ($password == $dbpassword) && $is_admin == 1) {
+    if (($login == $dblogin) && ($password == $dbpassword)) {
         $_SESSION['user'] = $login;
         header("Location: admin.php");
     } else {

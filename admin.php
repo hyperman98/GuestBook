@@ -67,15 +67,25 @@ if (isset($_POST['logout'])) {
     <body>
        <div class="contentToChange">
            <h1>Block reviews</h1>
-<?if (!empty($_SESSION['user'])) { echo '<p>Здравствуйте, администратор</p><form method="post"><input type="submit" name="logout" value="Выйти"></form>';}?>
+               <?if (!empty($_SESSION['user'])) { echo '<p>Здравствуйте, '.$_SESSION['user'].'</p><form method="post"><input type="submit" name="logout" value="Выйти"></form>';}?><br><a href="/">Раздел отзывов</a><br><br>
+            <?if(!empty($items)):?>
         <table class="comments-block">
+            <tr>
+            <form method="post">
+    <input type="submit" name="name_sorting" value="Sorting by name">
+    <input type="submit" name="name_sorting_desc" value="Sorting by name DESC">
+    <input type="submit" name="date_sorting" value="Sorting by date">
+    <input type="submit" name="date_sorting_desc" value="Sorting by date DESC">
+    <input type="submit" name="mail_sorting" value="Sorting by mail">
+    <input type="submit" name="mail_sorting_desc" value="Sorting by mail DESC">
+    </form></tr>
     <tr>
         <th>ID</th>
         <th>Name</th>
         <th>Date</th>
         <th>Email<th>
     </tr>
-    <?if(!empty($items)):
+    <?
         foreach ($items as $item):
         if (isset($_POST[$item['id']])) {
                 DB::query("UPDATE users SET is_block = 0 WHERE id = ".$item['id']);
@@ -93,18 +103,9 @@ if (isset($_POST['logout'])) {
     <? endforeach;?>
   
     <?else:?>
-    <div class="com-item"><h2>No active reviews</h2></div>
-    <? endif;?>
-    <br>
-    <form method="post">
-    <input type="submit" name="name_sorting" value="Sorting by name">
-    <input type="submit" name="name_sorting_desc" value="Sorting by name DESC">
-    <input type="submit" name="date_sorting" value="Sorting by date">
-    <input type="submit" name="date_sorting_desc" value="Sorting by date DESC">
-    <input type="submit" name="mail_sorting" value="Sorting by mail">
-    <input type="submit" name="mail_sorting_desc" value="Sorting by mail DESC">
-    </form>
+    <div class="com-item"><h2>No active reviews</h2></div>  
 </table>
+           <? endif;?>
        </div>
     </body>
 </html>
