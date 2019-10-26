@@ -56,8 +56,6 @@ while($row = $result->fetch_assoc()){
 if (isset($_POST['logout'])) {
     unset($_SESSION['user']);
 }
-
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -66,6 +64,7 @@ if (isset($_POST['logout'])) {
     </head>
     <body>
        <div class="contentToChange">
+           <?if (!empty($_SESSION['user'])) {?>
            <h1>Block reviews</h1>
                <?if (!empty($_SESSION['user'])) { echo '<p>Здравствуйте, '.$_SESSION['user'].'</p><form method="post"><input type="submit" name="logout" value="Выйти"></form>';}?><br><a href="/">Раздел отзывов</a><br><br>
             <?if(!empty($items)):?>
@@ -106,6 +105,9 @@ if (isset($_POST['logout'])) {
     <div class="com-item"><h2>No active reviews</h2></div>  
 </table>
            <? endif;?>
+               <?} else {?>
+               <a href="auth.php">Вам необходимо авторизоваться</a>
+               <?}?>
        </div>
     </body>
 </html>

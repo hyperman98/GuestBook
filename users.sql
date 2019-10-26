@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Окт 26 2019 г., 10:58
+-- Время создания: Окт 26 2019 г., 12:19
 -- Версия сервера: 5.6.41
 -- Версия PHP: 5.5.38
 
@@ -43,6 +43,14 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Дамп данных таблицы `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `date`, `message`, `ip`, `browser`, `is_admin`, `password`, `url`, `is_block`) VALUES
+(11, 'Mister', 'man844@bgl.com', 1572078631, 'HEll!', 1270, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36 OPR/63.0.3368.107', 0, 'admin', 'https://mail.yandex.ru/', 1),
+(12, 'MISTER`321', 'man545t34844@bgl.com', 1572078663, 'HElfdfsdfdsl!', 1270, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36 OPR/63.0.3368.107', 0, 'admin_1', '', 0);
+
+--
 -- Индексы сохранённых таблиц
 --
 
@@ -61,7 +69,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

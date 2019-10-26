@@ -109,7 +109,8 @@ if (isset($_POST['logout'])) {
     <body>
 	<div class="contentToChange">
 	<h1>Reviews</h1>
-        <?if (!empty($_SESSION['user'])) { echo '<p>Здравствуйте, '.$_SESSION['user'].'</p><form method="post"><input type="submit" name="logout" value="Выйти"></form>';}?><br><a href="admin.php">Заблокированные отзывы</a><br>
+        <?if (!empty($_SESSION['user'])) { echo '<p>Здравствуйте, '.$_SESSION['user'].'</p><form method="post"><input type="submit" name="logout" value="Выйти"></form>';?><br><a href="admin.php">Заблокированные отзывы</a><br><?} else {?>
+        <a href="auth.php">Авторизация</a><?}?><br>
         <br><a name="top"></a>
         <div class="noFloat">
     	    <div class="titleText" onclick="show_form()">Make Review
@@ -141,7 +142,7 @@ if (isset($_POST['logout'])) {
                         <img class="hide_com" src="images/hide_com.gif" alt="" onclick="show_form();">
             </form>
 
-        </div>
+        </div><br>
 <?if(!empty($items)):?>       
 <table class="comments-block">
     <tr>    <form method="post">
